@@ -2,10 +2,23 @@ name: 'buildkit-action'
 description: 'Build and push a container image using buildkit'
 author: 'Jacky Nguyen'
 inputs:
-  milliseconds: # change this
+  buildkitImage:
+    required: false
+    description: 'Docker image reference for buildkit'
+    default: 'shopstic/buildkit:0.8.2'
+  context:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Absolute path to build context'
+  image:
+    required: true
+    description: 'Image name to build and push'
+  tag:
+    required: true
+    description: 'Image tag to build and push'
+  cacheTag:
+    required: false
+    description: 'Cache tag to export and import'
+    default: '__buildkit_cache__'
 runs:
   using: 'node12'
   main: 'dist/index.js'
