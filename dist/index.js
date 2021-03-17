@@ -46,8 +46,19 @@ function run() {
             const image = core.getInput('image');
             const tag = core.getInput('tag');
             const cacheTag = core.getInput('cacheTag');
-            const home = process.env['HOME'];
+            const skipIfExists = Boolean(core.getInput('skipIfExists'));
             const imageWithTag = `${image}:${tag}`;
+            if (skipIfExists) {
+                try {
+                    yield exec_1.exec('docker', ['manifest', 'inspect', imageWithTag]);
+                    core.info(`Image ${imageWithTag} already exists in the registry, nothing to do`);
+                    return;
+                }
+                catch (e) {
+                    core.info(`Image ${imageWithTag} does not exist in the registry, going to build`);
+                }
+            }
+            const home = process.env['HOME'];
             yield exec_1.exec('docker', [
                 'run',
                 '--workdir',

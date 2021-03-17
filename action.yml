@@ -19,6 +19,10 @@ inputs:
     required: false
     description: 'Cache tag to export and import'
     default: '__buildkit_cache__'
+  skipIfExists:
+    required: false
+    description: 'Whether to skip building the image if it already exists in the registry'
+    default: 'false'
 runs:
   using: 'node12'
   main: 'dist/index.js'

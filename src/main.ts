@@ -8,9 +8,24 @@ async function run(): Promise<void> {
     const image = core.getInput('image')
     const tag = core.getInput('tag')
     const cacheTag = core.getInput('cacheTag')
+    const skipIfExists = Boolean(core.getInput('skipIfExists'))
+    const imageWithTag = `${image}:${tag}`
+
+    if (skipIfExists) {
+      try {
+        await exec('docker', ['manifest', 'inspect', imageWithTag])
+        core.info(
+          `Image ${imageWithTag} already exists in the registry, nothing to do`
+        )
+        return
+      } catch (e) {
+        core.info(
+          `Image ${imageWithTag} does not exist in the registry, going to build`
+        )
+      }
+    }
 
     const home = process.env['HOME']!
-    const imageWithTag = `${image}:${tag}`
 
     await exec('docker', [
       'run',
