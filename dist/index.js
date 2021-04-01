@@ -93,7 +93,7 @@ function run() {
                 '--local',
                 'dockerfile=/context',
                 '--output',
-                `type=image,\\"name=${imagesToPush.join(',')}\\",push=true`,
+                `type=image,"name=${imagesToPush.join(',')}",push=true`,
                 '--export-cache',
                 `type=registry,ref=${image}:${cacheTag}`,
                 '--import-cache',
