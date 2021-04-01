@@ -23,6 +23,11 @@ inputs:
     required: false
     description: 'Whether to skip building the image if it already exists in the registry'
     default: 'false'
+outputs:
+  image:
+    description: 'Image name that has been built and pushed'
+  tag:
+    description: 'Image tag that has been built and pushed'
 runs:
   using: 'node12'
   main: 'dist/index.js'

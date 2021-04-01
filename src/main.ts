@@ -59,6 +59,9 @@ async function run(): Promise<void> {
       '--import-cache',
       `type=registry,ref=${image}:${cacheTag}`
     ])
+
+    core.setOutput('image', image)
+    core.setOutput('tag', tag)
   } catch (error) {
     core.setFailed(error.message)
   }
