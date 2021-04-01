@@ -7,9 +7,17 @@ async function run(): Promise<void> {
     const context = core.getInput('context')
     const image = core.getInput('image')
     const tag = core.getInput('tag')
+    const additionalTags = core
+      .getInput('additionalTags')
+      .split(',')
+      .map(t => t.trim())
+      .filter(t => t.length > 0)
     const cacheTag = core.getInput('cacheTag')
     const skipIfExists = Boolean(core.getInput('skipIfExists'))
     const imageWithTag = `${image}:${tag}`
+
+    core.setOutput('image', image)
+    core.setOutput('tag', tag)
 
     if (skipIfExists) {
       try {
@@ -26,6 +34,9 @@ async function run(): Promise<void> {
     }
 
     const home = process.env['HOME']!
+    const imagesToPush = [imageWithTag].concat(
+      additionalTags.map(t => `${image}:${t}`)
+    )
 
     await exec('docker', [
       'run',
@@ -53,15 +64,12 @@ async function run(): Promise<void> {
       '--local',
       'dockerfile=/context',
       '--output',
-      `type=image,name=${imageWithTag},push=true`,
+      `type=image,\\"name=${imagesToPush.join(',')}\\",push=true`,
       '--export-cache',
       `type=registry,ref=${image}:${cacheTag}`,
       '--import-cache',
       `type=registry,ref=${image}:${cacheTag}`
     ])
-
-    core.setOutput('image', image)
-    core.setOutput('tag', tag)
   } catch (error) {
     core.setFailed(error.message)
   }

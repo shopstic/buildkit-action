@@ -45,9 +45,16 @@ function run() {
             const context = core.getInput('context');
             const image = core.getInput('image');
             const tag = core.getInput('tag');
+            const additionalTags = core
+                .getInput('additionalTags')
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t.length > 0);
             const cacheTag = core.getInput('cacheTag');
             const skipIfExists = Boolean(core.getInput('skipIfExists'));
             const imageWithTag = `${image}:${tag}`;
+            core.setOutput('image', image);
+            core.setOutput('tag', tag);
             if (skipIfExists) {
                 try {
                     yield exec_1.exec('docker', ['manifest', 'inspect', imageWithTag]);
@@ -59,6 +66,7 @@ function run() {
                 }
             }
             const home = process.env['HOME'];
+            const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `${image}:${t}`));
             yield exec_1.exec('docker', [
                 'run',
                 '--workdir',
@@ -85,14 +93,12 @@ function run() {
                 '--local',
                 'dockerfile=/context',
                 '--output',
-                `type=image,name=${imageWithTag},push=true`,
+                `type=image,\\"name=${imagesToPush.join(',')}\\",push=true`,
                 '--export-cache',
                 `type=registry,ref=${image}:${cacheTag}`,
                 '--import-cache',
                 `type=registry,ref=${image}:${cacheTag}`
             ]);
-            core.setOutput('image', image);
-            core.setOutput('tag', tag);
         }
         catch (error) {
             core.setFailed(error.message);

@@ -15,6 +15,9 @@ inputs:
   tag:
     required: true
     description: 'Image tag to build and push'
+  additionalTags:
+    required: false
+    description: 'Additional image tags to push (comma separated)'
   cacheTag:
     required: false
     description: 'Cache tag to export and import'
