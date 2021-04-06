@@ -13,7 +13,7 @@ async function run(): Promise<void> {
       .map(t => t.trim())
       .filter(t => t.length > 0)
     const cacheTag = core.getInput('cacheTag')
-    const skipIfExists = Boolean(core.getInput('skipIfExists'))
+    const skipIfExists = core.getInput('skipIfExists') === 'true'
     const imageWithTag = `${image}:${tag}`
 
     core.setOutput('image', image)
