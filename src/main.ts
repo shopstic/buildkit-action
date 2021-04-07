@@ -3,17 +3,18 @@ import {exec} from '@actions/exec'
 
 async function run(): Promise<void> {
   try {
-    const buildkitImage = core.getInput('buildkitImage')
-    const context = core.getInput('context')
-    const image = core.getInput('image')
-    const tag = core.getInput('tag')
+    const buildkitImage = core.getInput('buildkitImage', {required: true})
+    const context = core.getInput('context', {required: true})
+    const image = core.getInput('image', {required: true})
+    const tag = core.getInput('tag', {required: true})
     const additionalTags = core
       .getInput('additionalTags')
       .split(',')
       .map(t => t.trim())
       .filter(t => t.length > 0)
-    const cacheTag = core.getInput('cacheTag')
-    const skipIfExists = core.getInput('skipIfExists') === 'true'
+    const cacheTag = core.getInput('cacheTag', {required: true})
+    const skipIfExists =
+      core.getInput('skipIfExists', {required: true}) === 'true'
     const imageWithTag = `${image}:${tag}`
 
     core.setOutput('image', image)
