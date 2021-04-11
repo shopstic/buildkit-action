@@ -35,9 +35,9 @@ async function run(): Promise<void> {
     }
 
     const home = process.env['HOME']!
-    const imagesToPush = [imageWithTag].concat(
-      additionalTags.map(t => `name=${image}:${t}`)
-    )
+    const imagesToPush = [imageWithTag]
+      .concat(additionalTags)
+      .map(t => `name=${image}:${t}`)
 
     await exec('docker', [
       'run',
