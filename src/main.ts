@@ -36,7 +36,7 @@ async function run(): Promise<void> {
 
     const home = process.env['HOME']!
     const imagesToPush = [imageWithTag].concat(
-      additionalTags.map(t => `${image}:${t}`)
+      additionalTags.map(t => `name=${image}:${t}`)
     )
 
     await exec('docker', [
@@ -65,7 +65,7 @@ async function run(): Promise<void> {
       '--local',
       'dockerfile=/context',
       '--output',
-      `type=image,"name=${imagesToPush.join(',')}",push=true`,
+      `type=image,"${imagesToPush.join(',')}",push=true`,
       '--export-cache',
       `type=registry,ref=${image}:${cacheTag}`,
       '--import-cache',

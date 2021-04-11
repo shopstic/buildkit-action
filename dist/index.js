@@ -41,17 +41,17 @@ const exec_1 = __webpack_require__(514);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const buildkitImage = core.getInput('buildkitImage');
-            const context = core.getInput('context');
-            const image = core.getInput('image');
-            const tag = core.getInput('tag');
+            const buildkitImage = core.getInput('buildkitImage', { required: true });
+            const context = core.getInput('context', { required: true });
+            const image = core.getInput('image', { required: true });
+            const tag = core.getInput('tag', { required: true });
             const additionalTags = core
                 .getInput('additionalTags')
                 .split(',')
                 .map(t => t.trim())
                 .filter(t => t.length > 0);
-            const cacheTag = core.getInput('cacheTag');
-            const skipIfExists = core.getInput('skipIfExists') === 'true';
+            const cacheTag = core.getInput('cacheTag', { required: true });
+            const skipIfExists = core.getInput('skipIfExists', { required: true }) === 'true';
             const imageWithTag = `${image}:${tag}`;
             core.setOutput('image', image);
             core.setOutput('tag', tag);
@@ -66,7 +66,7 @@ function run() {
                 }
             }
             const home = process.env['HOME'];
-            const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `${image}:${t}`));
+            const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `name=${image}:${t}`));
             yield exec_1.exec('docker', [
                 'run',
                 '--workdir',
@@ -93,7 +93,7 @@ function run() {
                 '--local',
                 'dockerfile=/context',
                 '--output',
-                `type=image,"name=${imagesToPush.join(',')}",push=true`,
+                `type=image,"${imagesToPush.join(',')}",push=true`,
                 '--export-cache',
                 `type=registry,ref=${image}:${cacheTag}`,
                 '--import-cache',
