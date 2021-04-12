@@ -66,7 +66,7 @@ function run() {
                 }
             }
             const home = process.env['HOME'];
-            const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `name=${image}:${t}`));
+            const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `${image}:${t}`));
             yield exec_1.exec('docker', [
                 'run',
                 '--workdir',
@@ -93,7 +93,7 @@ function run() {
                 '--local',
                 'dockerfile=/context',
                 '--output',
-                `type=image,"${imagesToPush.join(',')}",push=true`,
+                `type=image,"name=${imagesToPush.join(',')}",push=true`,
                 '--export-cache',
                 `type=registry,ref=${image}:${cacheTag}`,
                 '--import-cache',

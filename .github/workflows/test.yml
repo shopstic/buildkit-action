@@ -33,3 +33,4 @@ jobs:
           context: ${{ github.workspace }}/test-context
           image: shopstic/buildkit-action-test
           tag: ${{ github.sha }}
+          additionalTags: foo,bar,baz
