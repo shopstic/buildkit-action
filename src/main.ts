@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import {exec} from '@actions/exec'
+import * as fs from 'fs'
 
 async function run(): Promise<void> {
   try {
@@ -39,6 +40,11 @@ async function run(): Promise<void> {
       additionalTags.map(t => `${image}:${t}`)
     )
 
+    const hostConfigPath = `${home}/.docker/config.json`
+    const mountDockerConfigArgs = fs.existsSync(hostConfigPath)
+      ? ['-v', `${hostConfigPath}:/home/user/.docker/config.json`]
+      : []
+
     await exec('docker', [
       'run',
       '--workdir',
@@ -54,8 +60,7 @@ async function run(): Promise<void> {
       'buildctl-daemonless.sh',
       '-v',
       `${context}:/context`,
-      '-v',
-      `${home}/.docker/config.json:/home/user/.docker/config.json`,
+      ...mountDockerConfigArgs,
       buildkitImage,
       'build',
       '--frontend',

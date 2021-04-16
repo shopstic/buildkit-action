@@ -38,6 +38,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(186));
 const exec_1 = __webpack_require__(514);
+const fs = __importStar(__webpack_require__(747));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -67,6 +68,10 @@ function run() {
             }
             const home = process.env['HOME'];
             const imagesToPush = [imageWithTag].concat(additionalTags.map(t => `${image}:${t}`));
+            const hostConfigPath = `${home}/.docker/config.json`;
+            const mountDockerConfigArgs = fs.existsSync(hostConfigPath)
+                ? ['-v', `${hostConfigPath}:/home/user/.docker/config.json`]
+                : [];
             yield exec_1.exec('docker', [
                 'run',
                 '--workdir',
@@ -82,8 +87,7 @@ function run() {
                 'buildctl-daemonless.sh',
                 '-v',
                 `${context}:/context`,
-                '-v',
-                `${home}/.docker/config.json:/home/user/.docker/config.json`,
+                ...mountDockerConfigArgs,
                 buildkitImage,
                 'build',
                 '--frontend',
