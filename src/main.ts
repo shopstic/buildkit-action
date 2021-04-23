@@ -72,7 +72,7 @@ async function run(): Promise<void> {
       '--output',
       `type=image,"name=${imagesToPush.join(',')}",push=true`,
       '--export-cache',
-      `type=registry,ref=${image}:${cacheTag}`,
+      `type=registry,ref=${image}:${cacheTag},mode=max`,
       '--import-cache',
       `type=registry,ref=${image}:${cacheTag}`
     ])
